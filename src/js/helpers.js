@@ -1,7 +1,7 @@
 // This file contains couple of functions that we reuse over and over in our project.
 
 import { async } from 'regenerator-runtime';
-import { TIMEOUT_SEC } from './config';
+import { TIMEOUT_SEC } from './config.js';
 
 //Returns a new Promise which will reject after a certain time.
 const timeout = function (s) {

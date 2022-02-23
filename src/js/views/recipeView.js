@@ -5,6 +5,8 @@ import {Fraction} from 'fractional';
 class RecipeView {
     #parentElement = document.querySelector('.recipe');
     #data;
+    #errorMessage = 'Sorry we could not find this recipe.Please try another recipe.';
+    #message = '';
 
     render(data) {
         this.#data = data;
@@ -17,14 +19,39 @@ class RecipeView {
         this.#parentElement.innerHTML = '';
     }
 
-    renderSpinner = function(){
+    renderSpinner(){
         const markup =`<div class="spinner">
         <svg>
           <use href="${icons}#icon-loader"></use>
         </svg>
       </div>`
-      this.#parentElement.innerHTML = '';
+      this.#clear();
       this.#parentElement.insertAdjacentHTML('afterbegin',markup);
+    }
+
+    renderError(message = this.#errorMessage){
+        const markup = `
+        <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+        `
+    }
+    renderMessage(message = this.#message){
+        const markup = `
+        <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+        `
     }
 
     #generateMarkup(){
@@ -41,7 +68,7 @@ class RecipeView {
                 <svg class="recipe__info-icon">
                 <use href="${icons}#icon-clock"></use>
                 </svg>
-                <span class="recipe__info-data recipe__info-data--minutes">${this.#data.cooking_time}</span>
+                <span class="recipe__info-data recipe__info-data--minutes">${this.#data.cookingTime}</span>
                 <span class="recipe__info-text">minutes</span>
             </div>
             <div class="recipe__info">
@@ -103,6 +130,14 @@ class RecipeView {
             </div>
     `;
     }
+
+    addHandlerRender(handler){
+        
+        // Event Listeners  
+        window.addEventListener('hashchange',handler);
+        window.addEventListener('load',handler);
+    }
+
     #generateMarkupIngredient(ing){
         return `
             <li class="recipe__ingredient">
