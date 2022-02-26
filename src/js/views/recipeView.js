@@ -9,6 +9,31 @@ class RecipeView extends View {
     _errorMessage = 'Sorry we could not find this recipe.Please try another recipe.';
     _message = '';
 
+    addHandlerRender(handler){
+        
+        // Event Listeners  
+        window.addEventListener('hashchange',handler);
+        window.addEventListener('load',handler); 
+    }
+
+    addHandlerUpdateServings(handler){
+        this._parentElement.addEventListener('click',function(e){
+           const btn = e.target.closest('.btn--update-servings');
+           if (!btn) return;
+           const updateTo = +btn.dataset.updateTo;
+           if(updateTo > 0)
+           handler(updateTo);
+        })
+    }
+
+    addHandlerAddBookmark(handler){
+        this._parentElement.addEventListener('click',function(e){
+            const btn = e.target.closest('.btn--bookmark');
+            if(!btn)return;
+            handler();
+        });
+    }
+
     _generateMarkup(){
         return `
             <figure class="recipe__fig">
@@ -49,9 +74,9 @@ class RecipeView extends View {
 
             <div class="recipe__user-generated">
             </div>
-            <button class="btn--round">
+            <button class="btn--round btn--bookmark">
                 <svg class="">
-                <use href="${icons}#icon-bookmark-fill"></use>
+                <use href="${icons}#icon-bookmark${this._data.bookmarked ? '-fill':''}"></use>
                 </svg>
             </button>
             </div>
@@ -81,23 +106,6 @@ class RecipeView extends View {
             </a>
             </div>
     `;
-    }
-
-    addHandlerRender(handler){
-        
-        // Event Listeners  
-        window.addEventListener('hashchange',handler);
-        window.addEventListener('load',handler); 
-    }
-
-    addHandlerUpdateServings(handler){
-        this._parentElement.addEventListener('click',function(e){
-           const btn = e.target.closest('.btn--update-servings');
-           if (!btn) return;
-           const updateTo = +btn.dataset.updateTo;
-           if(updateTo > 0)
-           handler(updateTo);
-        })
     }
 
     _generateMarkupIngredient(ing){
