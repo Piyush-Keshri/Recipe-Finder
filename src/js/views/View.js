@@ -12,7 +12,7 @@ export default class View{
     }
 
     update(data){
-      if(!data || (Array.isArray(data) && data.length === 0)) return this.renderError();
+  
       this._data = data;
       const newMarkup = this._generateMarkup();
 
@@ -20,8 +20,20 @@ export default class View{
       const newElements = Array.from(newDOM.querySelectorAll('*'));
       const curElements = Array.from(this._parentElement.querySelectorAll('*'));
 
-      console.log(curElements);
-      console.log(newElements);
+      newElements.forEach((newEl,i) => {
+        const curEl = curElements[i];
+
+        //Updates Changed Text 
+        if(!newEl.isEqualNode(curEl) && newEl.firstChild.nodeValue.trim() !== ''){
+        
+          curEl.textContent = newEl.textContent;
+        }
+
+        // Updates Changed Attributes
+        if(!newEl.isEqualNode(curEl))
+          Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name,attr.value));
+      });
+
     }
 
     _clear(){
