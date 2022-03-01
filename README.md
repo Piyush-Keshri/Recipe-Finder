@@ -22,4 +22,4 @@ Features -->
 
 9.Own Recipes are Automatically Bookmarked
 
-10. DEPLOYED.
+10.DEPLOYED.
