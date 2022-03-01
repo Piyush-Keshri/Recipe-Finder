@@ -78,41 +78,55 @@ const controlServings = function(newServings){
   model.updateServings(newServings);
 
   // Update the recipe View
-  // recipeView.render(model.state.recipe);
-  recipeView.update(model.state.recipe);
+   recipeView.update(model.state.recipe);
+ 
 }
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
 
-const controlAddBookmark = function(){
+const controlAddBookmark = function () {
   // 1) Add/remove bookmark
-  if(!model.state.recipe.bookmarked){
-  model.addBookmark(model.state.recipe);
-  }
-  else{
-  model.deleteBookmark(model.state.recipe.id);
-  } 
-  
-  // 2) Update Recipe View
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+
+  // 2) Update recipe view
   recipeView.update(model.state.recipe);
 
   // 3) Render bookmarks
   bookmarksView.render(model.state.bookmarks);
-}
+};
 
-const controlBookmarks = function(){
-  bookmarksView.render(model.state.bookmarks);
-}
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    // Show loading spinner
+    addRecipeView.renderSpinner();
 
-const controlAddRecipe = async function(newRecipe){
-  try{
-  // Upload the new recipe Data
-  await model.uploadRecipe(newRecipe);
-  console.log(model.state.recipe);
-  }
-  catch(err){
-    console.error('💥',err);
+    // Upload the new recipe data
+    await model.uploadRecipe(newRecipe);
+    console.log(model.state.recipe);
+
+    // Render recipe
+    recipeView.render(model.state.recipe);
+
+    // Success message
+    addRecipeView.renderMessage();
+
+    // Render bookmark view
+    bookmarksView.render(model.state.bookmarks);
+
+    // Change ID in URL
+    window.history.pushState(null, '', `#${model.state.recipe.id}`);
+
+    // Close form window
+    setTimeout(function () {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
+  } catch (err) {
+    console.error('💥', err);
     addRecipeView.renderError(err.message);
   }
-}
+};
 
 const init = function(){
   bookmarksView.addHandlerRender(controlBookmarks);
